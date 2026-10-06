@@ -11,15 +11,13 @@ type R = {
 
 export const commonRequest = async <T extends Record<string, any>>(
    module: keyof typeof routes,
-   endPoint: string,
-   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'QUERY' | 'PATCH',
+   endpoint: string,
+   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'QUERY' | 'PATCH' = 'GET',
    params?: T
 ): Promise<R> => {
    try {
-      const url = `${process.env.NEXT_BASE_URL}${routes[module]}${endPoint}`;
-
-      const config: AxiosRequestConfig
-       = { url, method, };
+      const url = `${process.env.NEXT_BASE_URL}${module}${routes[endpoint]}`;
+      const config: AxiosRequestConfig = { url, method, };
 
       if (method === 'GET') {
          config.params = params;
@@ -37,5 +35,6 @@ export const commonRequest = async <T extends Record<string, any>>(
    }
    catch (err) {
       throw err;
+      // IMPLMENT GLOBAL ERROR DAILOG BOX HERE
    }
 };

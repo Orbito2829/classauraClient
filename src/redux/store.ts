@@ -1,7 +1,7 @@
-import { createStore } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import profileReducer from "./slicers/profileSlicer";
 
-const store = createStore({
+const store = configureStore({
    reducer: {
       profile: profileReducer,
    },
