@@ -1,16 +1,25 @@
 import routes from './routesMapping';
-import axios from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+
+type R = {
+   code: number;
+   message: string;
+   data: any;
+   lastUpdateTime?: string;
+   lastCachedTime?: string;
+};
 
 export const commonRequest = async <T extends Record<string, any>>(
    module: keyof typeof routes,
    endPoint: string,
    method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'QUERY' | 'PATCH',
    params?: T
-): Promise<AxiosResponse<R>> => {
+): Promise<R> => {
    try {
       const url = `${process.env.NEXT_BASE_URL}${routes[module]}${endPoint}`;
 
-      const config: AxiosRequestConfig = { url, method, };
+      const config: AxiosRequestConfig
+       = { url, method, };
 
       if (method === 'GET') {
          config.params = params;
@@ -18,13 +27,13 @@ export const commonRequest = async <T extends Record<string, any>>(
          config.data = params;
       };
 
-      const res = await axios(config);
+      const res = await axios<R>(config);
 
-      if (res.code === 0) {
-         return res.message;
+      if (res.data.code === 0) {
+         // SET SNACK BAR HERE
       };
 
-      return res;
+      return res.data.data;
    }
    catch (err) {
       throw err;
