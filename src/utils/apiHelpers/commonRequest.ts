@@ -16,7 +16,7 @@ export const commonRequest = async <T extends Record<string, any>>(
    params?: T
 ): Promise<R> => {
    try {
-      const url = `${process.env.NEXT_BASE_URL}${module}${routes[endpoint]}`;
+      const url = `${process.env.NEXT_BASE_URL}${module}${routes[module][endpoint]}`;
       const config: AxiosRequestConfig = { url, method, };
 
       if (method === 'GET') {
