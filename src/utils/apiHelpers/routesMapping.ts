@@ -2,7 +2,7 @@
 
 const routes: Record<string, Record<string, string>> = {
    auth: {
-      logout: '/logout',
+      logoutUser: '/logout',
    }
 };
 
