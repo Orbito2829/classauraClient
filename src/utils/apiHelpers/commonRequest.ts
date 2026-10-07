@@ -9,6 +9,10 @@ type R = {
    lastCachedTime?: string;
 };
 
+const apiClient = axios.create({
+   withCredentials: true
+});
+
 export const commonRequest = async <T extends Record<string, any>>(
    module: keyof typeof routes,
    endpoint: string,
@@ -16,7 +20,18 @@ export const commonRequest = async <T extends Record<string, any>>(
    params?: T
 ): Promise<R> => {
    try {
-      const url = `${process.env.NEXT_BASE_URL}${module}${routes[module][endpoint]}`;
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+      const route = routes[module]?.[endpoint];
+
+      if (!baseUrl) {
+         throw new Error('NEXT_PUBLIC_BASE_URL is not configured.');
+      };
+
+      if (!route) {
+         throw new Error(`API route is not configured for ${module}.${endpoint}.`);
+      };
+
+      const url = `${baseUrl.replace(/\/+$/, '')}/${module}/${route.replace(/^\/+/, '')}`;
       const config: AxiosRequestConfig = { url, method, };
 
       if (method === 'GET') {
@@ -25,13 +40,13 @@ export const commonRequest = async <T extends Record<string, any>>(
          config.data = params;
       };
 
-      const res = await axios<R>(config);
+      const res = await apiClient<R>(config);
 
       if (res.data.code === 0) {
          // SET SNACK BAR HERE
       };
 
-      return res.data.data;
+      return res.data;
    }
    catch (err) {
       throw err;
